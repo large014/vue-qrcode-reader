@@ -33,7 +33,7 @@ export default {
       this.$refs.qrcode.switchCamera();
     },
     cameraOFF(){
-      this.isScan = false;      
+      this.isScan = false;
       this.$refs.qrcode.scanOFF();
     },
     cameraON(){

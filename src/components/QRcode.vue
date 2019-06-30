@@ -1,11 +1,13 @@
 <template>
   <div class="qrwrappear">
-    <video id="preview" playsinline muted autoplay class="active"></video>
+    <video ref="preview" id="preview" playsinline muted autoplay class="active"></video>
   </div>
 </template>
 
 <script>
-import Instascan from 'instascan/index'
+// import Instascan from 'instascan/index'
+import Instascan from '@/assets/js/instascan';
+
 
 export default {
   name: 'QRcode',
@@ -37,8 +39,14 @@ export default {
       });
       Instascan.Camera.getCameras().then(function (cameras) {
         self.cameras = cameras;
+        // console.log(cameras);
+        for (let index = 0; index < cameras.length; index++) {
+          console.log('cameras.id = ' + cameras[index].id + ", name = " + cameras[index].name);
+        }
+
         if (cameras.length > 0) {
           self.activeCameraId = cameras[0].id;
+          console.log('QRcode : start call');
           self.scanner.start(cameras[0]);
         } else {
           console.error('No cameras found.');
@@ -66,7 +74,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .qrwrappear{
   position: fixed;
   left: 0;
@@ -77,21 +85,26 @@ export default {
 #preview{
   position: absolute;
 }
-  @media (aspect-ratio: 16/9), (min-aspect-ratio: 16/9) {
-    #preview {
-      width: 100%;
-      /* top: 50%; */
-      /* transform: translateX(-50%) scaleX(-1); */
-      transform: scaleX(-1);
+@media (aspect-ratio: 16/9), (min-aspect-ratio: 16/9) {
+  #preview {
+    width: 100%;
+    /* top: 50%; */
+    /* transform: translateX(-50%) scaleX(-1); */
+    transform: scaleX(-1);
+    &.rear{
+      transform: scaleX(1);
     }
   }
-  @media (max-aspect-ratio: 16/9) {
-    #preview {
-      height: 100%;
-      left: 50%;
-      transform: translateX(-50%) scaleX(-1);
+}
+@media (max-aspect-ratio: 16/9) {
+  #preview {
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%) scaleX(-1);
+    &.rear{
+      transform: scaleX(1);
     }
   }
-
+}
 
 </style>
