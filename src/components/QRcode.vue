@@ -5,8 +5,72 @@
 </template>
 
 <script>
-// import Instascan from 'instascan/index'
-import Instascan from '@/assets/js/instascan';
+import Instascan from 'instascan/index'
+// import Instascan from '@/assets/js/instascan';
+
+Instascan.Camera.prototype.start =
+  async function() {
+    console.log('camera : start = ' + this.id + ", name = " + this.name );
+    let constraints;
+    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (iOS) {
+      if (this.name == "前面側カメラ") {
+        this.cameraType = 'user';
+        console.log('前面');
+      } else {
+        this.cameraType = "environment";
+      }
+
+      constraints = {
+        audio: false,
+        video: {
+          // facingMode: 'environment',
+          facingMode: this.cameraType,
+          mandatory: {
+            sourceId: this.id,
+            minWidth: 600,
+            maxWidth: 800,
+            minAspectRatio: 1.6
+          },
+          optional: []
+        }
+      };
+    } else {
+      constraints = {
+        audio: false,
+        video: {
+          mandatory: {
+            sourceId: this.id,
+            minWidth: 600,
+            maxWidth: 800,
+            minAspectRatio: 1.6
+          },
+          optional: []
+        }
+      };
+    }
+    this._stream = await Instascan.Camera._wrapErrors(async () => {
+      return await navigator.mediaDevices.getUserMedia(constraints);
+    });
+
+    return this._stream;
+  }
+
+Instascan.Scanner.prototype._enableScan =
+async function(camera) {
+      this._camera = camera || this._camera;
+    if (!this._camera) {
+      throw new Error('Camera is not defined.');
+    }
+    console.log('scanner.js : camera.start');
+
+    let stream = await this._camera.start();
+    this.video.srcObject = stream;
+
+    if (this._continuous) {
+      this._scanner.start();
+    }
+}
 
 
 export default {
@@ -27,7 +91,7 @@ export default {
   },
   mounted(){
       let self = this;
-      this.scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+      this.scanner = new Instascan.Scanner({ video: document.getElementById('preview'),mirror: false });
       this.scanner.addListener('scan', function (content) {
         self.$emit('scan-complete', content);
       });
