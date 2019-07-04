@@ -87,7 +87,7 @@ export default {
       cameras: [],
       scans: [],
       cameraID:[],
-      isRear:false
+      isRear:true
     }
   },
   mounted(){
@@ -168,6 +168,8 @@ export default {
       this.$emit('scan-inactive');
     },
     switchCamera(){
+      console.log('this.cameras.length = ' + this.cameras.length);
+      
       if(this.cameras.length <= 1){
         return;
       }
@@ -175,10 +177,10 @@ export default {
 
       if(this.cameraIndex == 0){
         this.cameraIndex =1;
-        isRear = true;
+        isRear = false;
       } else {
         this.cameraIndex = 0;
-        isRear = false;
+        isRear = true;
       }
 
       this.activeCameraId = this.cameras[this.cameraIndex].id;
@@ -225,7 +227,7 @@ export default {
     left: 50%;
     transform: translateX(-50%) scaleX(-1);
     &.rear{
-      transform: translateX(-50%) scaleX(-1);
+      transform: translateX(-50%) scaleX(1);
     }
   }
 }
