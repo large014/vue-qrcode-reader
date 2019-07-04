@@ -1,6 +1,6 @@
 <template>
   <div class="qrwrappear">
-    <video ref="preview" id="preview" playsinline muted autoplay class="active"></video>
+    <video ref="preview" id="preview" playsinline muted autoplay class="active" :class="{rear:isRear}"></video>
   </div>
 </template>
 
@@ -87,6 +87,7 @@ export default {
       cameras: [],
       scans: [],
       cameraID:[],
+      isRear:false
     }
   },
   mounted(){
@@ -170,7 +171,16 @@ export default {
       if(this.cameras.length <= 1){
         return;
       }
-      this.cameraIndex = (this.cameraIndex == 0) ? this.cameraIndex =1 : this.cameraIndex = 0;
+      // this.cameraIndex = (this.cameraIndex == 0) ? this.cameraIndex =1 : this.cameraIndex = 0;
+
+      if(this.cameraIndex == 0){
+        this.cameraIndex =1;
+        isRear = true;
+      } else {
+        this.cameraIndex = 0;
+        isRear = false;
+      }
+
       this.activeCameraId = this.cameras[this.cameraIndex].id;
       this.scanner.start(this.cameras[this.cameraIndex]);
       // this.activeCameraId = camera.id;
@@ -215,7 +225,7 @@ export default {
     left: 50%;
     transform: translateX(-50%) scaleX(-1);
     &.rear{
-      transform: scaleX(1);
+      transform: translateX(-50%) scaleX(-1);
     }
   }
 }

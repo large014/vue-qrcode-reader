@@ -49,7 +49,6 @@ export default {
       this.isScan = false;
     },
     scanComplete(content){
-      console.log('スキャン内容 : ' + content);
       this.scanData = content;
       this.isScan = true;
     },
