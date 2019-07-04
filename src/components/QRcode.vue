@@ -168,7 +168,7 @@ export default {
       this.$emit('scan-inactive');
     },
     switchCamera(){
-      console.log('this.cameras.length = ' + this.cameras.length);
+      // console.log('this.cameras.length = ' + this.cameras.length);
       
       if(this.cameras.length <= 1){
         return;
@@ -177,10 +177,10 @@ export default {
 
       if(this.cameraIndex == 0){
         this.cameraIndex =1;
-        isRear = false;
+        this.isRear = false;
       } else {
         this.cameraIndex = 0;
-        isRear = true;
+        this.isRear = true;
       }
 
       this.activeCameraId = this.cameras[this.cameraIndex].id;
