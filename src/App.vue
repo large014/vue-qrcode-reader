@@ -2,10 +2,11 @@
   <div id="app">
     <QRcode ref="qrcode" @scan-complete="scanComplete($event)" @scan-active="scanActive" @scan-inactive="scanInactive"/>
     <div class="ui">
-      <button @click="cameraSwtich">カメラスイッチ</button>
-      <button @click="cameraOFF">カメラOFF</button>
-      <button @click="cameraON">カメラON</button>
-      <button @click="scanRset">リセット</button>
+      <button @click="cameraStart" class="startBtn" :class="{on:!isQrsetting}">スタート</button>
+      <button @click="cameraSwtich" :class="{on:isQrsetting}">カメラスイッチ</button>
+      <button @click="cameraOFF" :class="{on:isQrsetting}">カメラOFF</button>
+      <button @click="cameraON" :class="{on:isQrsetting}">カメラON</button>
+      <button @click="scanRset" :class="{on:isQrsetting}">リセット</button>
     </div>
     <p :class="{on:isScan}">{{scanData}}</p>
   </div>
@@ -22,12 +23,17 @@ export default {
   data(){
     return{
       scanData:String,
-      isScan :false
+      isScan :false,
+      isQrsetting : false
     }
   },
   mounted(){
   },
   methods:{
+    cameraStart(){
+      this.isQrsetting = true;
+      this.$refs.qrcode.start();
+    },
     cameraSwtich(){
       this.isScan = false;
       this.$refs.qrcode.switchCamera();
@@ -80,21 +86,31 @@ button{
   padding: 10px 6px;
   margin: 3px;
   letter-spacing: -1px;
+  display: none;
+  &.on{
+    display: inline-block
+  }
 }
 p{
-    position: absolute;
-    top: 300px;
-    left: 50%;
-    transform: translate(-50%,0%);
-    z-index: 3;
-    width: 300px;
-    background-color: rgba(200, 200, 200, 0.5);
-    border: 1px solid #000;
-    padding: 10px;
-    word-wrap: break-word;
-    display: none;
-    &.on{
-      display: block;
-    }
+  position: absolute;
+  top: 300px;
+  left: 50%;
+  transform: translate(-50%,0%);
+  z-index: 3;
+  width: 300px;
+  background-color: rgba(200, 200, 200, 0.5);
+  border: 1px solid #000;
+  padding: 10px;
+  word-wrap: break-word;
+  display: none;
+  &.on{
+    display: block;
+  }
+}
+.startBtn{
+  display: none;
+  &.on{
+    display: inline-block
+  }
 }
 </style>

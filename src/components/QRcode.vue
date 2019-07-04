@@ -90,17 +90,55 @@ export default {
     }
   },
   mounted(){
+      // let self = this;
+      // this.scanner = new Instascan.Scanner({ video: document.getElementById('preview'),mirror: false });
+      // this.scanner.addListener('scan', function (content) {
+      //   self.$emit('scan-complete', content);
+      // });
+      // this.scanner.addListener('active', function () {
+      //   self.$emit('scan-active');
+      // });
+      // this.scanner.addListener('inactive', function () {
+      //   self.$emit('scan-inactive');
+      // });
+      // Instascan.Camera.getCameras().then(function (cameras) {
+      //   self.cameras = cameras;
+      //   // console.log(cameras);
+      //   for (let index = 0; index < cameras.length; index++) {
+      //     console.log('cameras.id = ' + cameras[index].id + ", name = " + cameras[index].name);
+      //   }
+
+      //   if (cameras.length > 0) {
+      //     self.activeCameraId = cameras[0].id;
+      //     console.log('QRcode : start call');
+      //     self.scanner.start(cameras[0]);
+      //   } else {
+      //     console.error('No cameras found.');
+      //   }
+      // }).catch(function (e) {
+      //   console.error(e);
+      // });
+  },
+  destroyed(){
+      this.scanner.removeEventListener('scan', this.scanComplete);
+      this.scanner.removeEventListener('active', this.scanActive);
+      this.scanner.removeEventListener('inactive', this.scanInactive);
+  },
+  methods:{
+    start(){
       let self = this;
       this.scanner = new Instascan.Scanner({ video: document.getElementById('preview'),mirror: false });
-      this.scanner.addListener('scan', function (content) {
-        self.$emit('scan-complete', content);
-      });
-      this.scanner.addListener('active', function () {
-        self.$emit('scan-active');
-      });
-      this.scanner.addListener('inactive', function () {
-        self.$emit('scan-inactive');
-      });
+
+      this.scanner.addListener('scan', this.scanComplete);
+      this.scanner.addListener('active', this.scanActive);
+      this.scanner.addListener('inactive', this.scanInactive);
+
+      // this.scanner.addListener('active', function () {
+      //   self.$emit('scan-active');
+      // });
+      // this.scanner.addListener('inactive', function () {
+      //   self.$emit('scan-inactive');
+      // });
       Instascan.Camera.getCameras().then(function (cameras) {
         self.cameras = cameras;
         // console.log(cameras);
@@ -118,9 +156,20 @@ export default {
       }).catch(function (e) {
         console.error(e);
       });
-  },
-  methods:{
+    },
+    scanComplete(content){
+      this.$emit('scan-complete', content);
+    },
+    scanActive(){
+      this.$emit('scan-active');
+    },
+    scanInactive(){
+      this.$emit('scan-inactive');
+    },
     switchCamera(){
+      if(this.cameras.length <= 1){
+        return;
+      }
       this.cameraIndex = (this.cameraIndex == 0) ? this.cameraIndex =1 : this.cameraIndex = 0;
       this.activeCameraId = this.cameras[this.cameraIndex].id;
       this.scanner.start(this.cameras[this.cameraIndex]);
